@@ -52,6 +52,7 @@ class Characters(db.Model):
             "name": self.name,
             "height": self.height,
             "gender": self.gender 
+            
     }
 
 class Planets(db.Model):

@@ -30,6 +30,15 @@ def handle_invalid_usage(error):
 def sitemap():
     return generate_sitemap(app)
 
+@app.route("/users", methods=["POST"])
+def create_user():
+    body_username = request.json.get("username") 
+    body_email = request.json.get("email")
+    user = User(username = body_username, email = body_email)
+    db.session.add(user)
+    db.session.commit()
+    return jsonify({"created": True, "user": user.username}), 200
+
 @app.route("/characters", methods=["POST"])
 def create_people():
     body_name = request.json.get("name") 
@@ -48,8 +57,15 @@ def get_characters():
 
 @app.route("/character/<int:oneCharacter_id>", methods=["GET"])
 def get_oneCharacter(oneCharacter_id):
-    oneCharacter = Characters.query.get(oneCharacter_id)
-    return jsonify({"oneCharacter": oneCharacter_serialized}), 200
+    character = Characters.query.filter_by(id=oneCharacter_id).first()
+    return jsonify({"result": character.serialize()}), 200
+
+""" @app.route("/character/<int:oneCharacter_id>", methods=["GET"])
+def get_oneCharacter(oneCharacter_id):
+    users = Characters.query.get()
+    oneCharacter= Characters.query.filter_by(id=oneCharacter_id).first()
+    oneCharacter = Characters.query.filter(Characters.id == oneCharacter_id).first()
+    return jsonify({"result": oneCharacter}), 200 """
 
 @app.route("/characters/<string:people_name>", methods=["DELETE"])
 def delete_characters(people_name):
