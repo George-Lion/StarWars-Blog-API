@@ -14,6 +14,7 @@ class User(db.Model):
     def serialize(self):
         return {
             "id": self.id,
+            "username": self.username,
             "email": self.email,
             "favorites": list(map(lambda favo: favo.serialize(), self.favorites))
     }
@@ -57,10 +58,12 @@ class Characters(db.Model):
 
 class Planets(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(250), nullable=False)
+    name = db.Column(db.String(250), unique=True, nullable=False)
     terrain = db.Column(db.String(250), nullable=False)
     climate = db.Column(db.String(250), nullable=False)
-  
+    
+    def __repr__(self):
+        return "planet: " + self.name
     
     def serialize(self):
         return {
@@ -72,10 +75,12 @@ class Planets(db.Model):
 
 class Vehicles(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    name = db.Column(db.String(250), nullable=False)
+    name = db.Column(db.String(250), unique=True, nullable=False)
     model = db.Column(db.String(250), nullable=False)
     passengers = db.Column(db.Integer, nullable=False)
     
+    def __repr__(self):
+        return "vehicle: " + self.name
 
     def serialize(self):
         return {
@@ -86,12 +91,3 @@ class Vehicles(db.Model):
             
     }
     
-    """ def __repr__(self):
-        return '<User %r>' % self.username """
-
-    def serialize(self):
-        return {
-            "id": self.id,
-            "email": self.email,
-            # do not serialize the password, its a security breach
-        }
