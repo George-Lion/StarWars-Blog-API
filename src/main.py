@@ -99,6 +99,22 @@ def favorite_people(ch_id, us_id):
     db.session.commit()
     return jsonify({"created": True, "people": new_fav.serialize()}), 200
 
+@app.route("/users/<int:us_id>/favorite/planet/<int:pl_id>", methods=["POST"])
+def favorite_planet(pl_id, us_id):
+    user = User.query.get(us_id)
+    new_fav = Favorites(user_id = us_id, planet_id = pl_id)
+    db.session.add(new_fav)
+    db.session.commit()
+    return jsonify({"created": True, "planet": new_fav.serialize()}), 200
+
+@app.route("/users/<int:us_id>/favorite/vehicle/<int:vh_id>", methods=["POST"])
+def favorite_vehicle(vh_id, us_id):
+    user = User.query.get(us_id)
+    new_fav = Favorites(user_id = us_id, vehicle_id = vh_id)
+    db.session.add(new_fav)
+    db.session.commit()
+    return jsonify({"created": True, "vehicle": new_fav.serialize()}), 200
+
 #DELETE
 
 @app.route("/characters/<int:people_id>", methods=["DELETE"])
@@ -112,6 +128,13 @@ def delete_characters(people_id):
 def delete_planets(planet_id):
     planet = Planets.query.filter_by(id=planet_id).first()
     db.session.delete(planet)
+    db.session.commit()
+    return jsonify({"deleted": True}), 200
+
+@app.route("/vehicles/<int:vehicle_id>", methods=["DELETE"])
+def delete_vehicles(vehicle_id):
+    vehicle = Vehicles.query.filter_by(id=vehicle_id).first()
+    db.session.delete(vehicle)
     db.session.commit()
     return jsonify({"deleted": True}), 200
 
