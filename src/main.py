@@ -75,13 +75,12 @@ def get_user():
     users_serialized = list(map(lambda people: people.serialize(), users))
     return jsonify({"result": users_serialized}), 200
 
-@app.route("/user/favorites", methods=["GET"])
+@app.route("/user/<int:user_id>/favorites", methods=["GET"])
 def get_oneUser(user_id):
     user = User.query.filter_by(id=user_id).first()
-    return jsonify({"result": user.favorites}), 200
+    return jsonify({"result": user.serialize()}), 200
 
 # POST
-
 @app.route("/users", methods=["POST"])
 def create_user():
     body_username = request.json.get("username") 
@@ -116,6 +115,26 @@ def favorite_vehicle(vh_id, us_id):
     return jsonify({"created": True, "vehicle": new_fav.serialize()}), 200
 
 #DELETE
+@app.route("/favorite/character/<int:ch_id>", methods=["DELETE"])
+def delete_fav_character(ch_id):
+    people = Favorites.query.filter_by(id=ch_id).first()
+    db.session.delete(people)
+    db.session.commit()
+    return jsonify({"deleted": True}), 200
+    
+@app.route("/favorite/planet/<int:pl_id>", methods=["DELETE"])
+def delete_fav_planet(pl_id):
+    planet = Favorites.query.filter_by(id=pl_id).first()
+    db.session.delete(planet)
+    db.session.commit()
+    return jsonify({"deleted": True}), 200
+
+@app.route("/favorite/vehicles/<int:vh_id>", methods=["DELETE"])
+def delete_fav_vehicles(vh_id):
+    vehicles = Favorites.query.filter_by(id=vh_id).first()
+    db.session.delete(vehicles)
+    db.session.commit()
+    return jsonify({"deleted": True}), 200
 
 @app.route("/characters/<int:people_id>", methods=["DELETE"])
 def delete_characters(people_id):
