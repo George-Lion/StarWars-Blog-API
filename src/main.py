@@ -75,10 +75,16 @@ def get_user():
     users_serialized = list(map(lambda people: people.serialize(), users))
     return jsonify({"result": users_serialized}), 200
 
-@app.route("/user/<int:user_id>/favorites", methods=["GET"])
+@app.route("/user/<int:user_id>", methods=["GET"])
 def get_oneUser(user_id):
     user = User.query.filter_by(id=user_id).first()
     return jsonify({"result": user.serialize()}), 200
+
+@app.route('/user/<int:user_id>/favorites', methods=['GET'])
+def get_one_user_favorites(user_id):
+    favo = Favorite.query.filter(Favorite.user_id == user_id).all()
+    favo_serialized = list(map(lambda x: x.serialize(), favo))
+    return jsonify ({"result": favo_serialized}), 200
 
 # POST
 @app.route("/users", methods=["POST"])
